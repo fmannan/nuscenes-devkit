@@ -62,7 +62,9 @@ class KittiConverter:
                  lidar_name: str = 'LIDAR_TOP',
                  image_count: int = 10,
                  nusc_version: str = 'v1.0-mini',
-                 split: str = 'mini_train'):
+                 split: str = 'mini_train',
+                 dataroot: str = '/data/nuScenes/',
+                 verbose: bool = False):
         """
         :param nusc_kitti_dir: Where to write the KITTI-style annotations.
         :param cam_name: Name of the camera to export. Note that only one camera is allowed in KITTI.
@@ -83,7 +85,7 @@ class KittiConverter:
             os.makedirs(self.nusc_kitti_dir)
 
         # Select subset of the data to look at.
-        self.nusc = NuScenes(version=nusc_version)
+        self.nusc = NuScenes(version=nusc_version, dataroot=dataroot, verbose=verbose)
 
     def nuscenes_gt_to_kitti(self) -> None:
         """
@@ -109,6 +111,7 @@ class KittiConverter:
 
         # Use only the samples from the current split.
         sample_tokens = self._split_to_samples(split_logs)
+        print('sample_tokens size: ', len(sample_tokens))
         sample_tokens = sample_tokens[:self.image_count]
 
         tokens = []
